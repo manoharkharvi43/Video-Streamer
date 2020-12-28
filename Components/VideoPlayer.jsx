@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Video } from "expo-av";
 import * as ScreenOrientation from "expo-screen-orientation";
+import Constants from 'expo-constants'
 
 export default function VideoPlayer({ id, route }) {
 	const width = Dimensions.get("window").width;
@@ -17,7 +18,6 @@ export default function VideoPlayer({ id, route }) {
 	useEffect(() => {
 		LogBox.ignoreAllLogs();
 		toLandscape();
-		console.log(width, height);
 		return () => {
 			toPotrait();
 		};
@@ -36,45 +36,48 @@ export default function VideoPlayer({ id, route }) {
 
 	return (
 		<View
-			style={[styles.videoContainer, { width: height, height: width }]}
+			style={[styles.videoContainer, { width: height+Constants.statusBarHeight+20, height: width}]}
 			key={id}
 		>
 			<View style={[styles.loaderContainer, { top: width / 5 }]}>
 				<ActivityIndicator size={60} color="dodgerblue" />
 			</View>
-			<Video
-				source={{ uri: url }}
-				rate={1.0}
-				volume={1.0}
-				isMuted={false}
-				resizeMode="cover"
-				shouldPlay={false}
-				isLooping={false}
-				usePoster
-				ref={videoRef}
-				useNativeControls={true}
-				style={{
-					width: height,
-					height: width,
-				}}
-			/>
+			<View style={{ width: height/1.1, height:width ,alignSelf:'center' }}>
+				<Video
+					source={{ uri: url }}
+					rate={1.0}
+					volume={1.0}
+					isMuted={false}
+					resizeMode="cover"
+					shouldPlay={false}
+					isLooping={false}
+					usePoster
+					ref={videoRef}
+					useNativeControls={true}
+					style={{
+						width: height/1.1,
+						height: width/1,
+					}}
+				/>
+			</View>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
 	videoContainer: {
-		margin: 0,
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		flexDirection: "column",
 		backgroundColor: "black",
+		padding: 0,
+		margin:0
 	},
 	loaderContainer: {
 		position: "absolute",
 		left: 0,
 		right: 0,
 		bottom: 0,
+		alignSelf:'center'
 	},
 });
